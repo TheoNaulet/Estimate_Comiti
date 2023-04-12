@@ -12,19 +12,17 @@
         $adherentsPrice = calculateAdherentsPrice($adherents); 
         
         $sectionPrice = calculateSectionPrice($sections, $adherents); 
-        $priceWithReduction = calculateReduction($adherentsPrice, $sectionPrice, $adherents, $federation);
+        $priceWithReduction = round(calculateReduction($adherentsPrice, $sectionPrice, $adherents, $federation), 2);
         
-        $priceWithReduction_bonus = calculatePrice_bonus($adherentsPrice, $sections, $adherents, $federation); 
+        $priceWithReduction_bonus = round(calculatePrice_bonus($adherentsPrice, $sections, $adherents, $federation),2); 
         
-        $priceWithTVA = getTva($priceWithReduction);
-        $priceWithTVA_bonus = getTva($priceWithReduction_bonus); 
+        $priceWithTVA = round(getTva($priceWithReduction), 2);
+        $priceWithTVA_bonus = round(getTva($priceWithReduction_bonus), 2); 
 
-        $yearlyPrice = $priceWithTVA * 12;
-        $yearlyPrice_bonus = $priceWithTVA_bonus * 12; 
+        $yearlyPrice = round($priceWithTVA * 12, 2);
+        $yearlyPrice_bonus = round($priceWithTVA_bonus * 12, 2); 
 
         return array(
-            "adherentsPrice" => $adherentsPrice,
-            "sectionPrice" => $sectionPrice,
             "priceWithReduction" => $priceWithReduction,
             "priceWithTVA" => $priceWithTVA,
             "yearlyPrice" => $yearlyPrice, 
@@ -87,12 +85,16 @@
      */
     function calculateReduction($adherentsPrice, $sectionPrice, $numberAdherents, $federation) {
         if ($federation == 'N') {
-            if ($sectionPrice >= 15) {
-                $sectionPrice -= 15;
-            } elseif ($sectionPrice == 10) {
-                $sectionPrice -= 10;
-            } elseif ($sectionPrice == 5) {
-                $sectionPrice -= 5;
+            switch ($sectionPrice) {
+                case 15:
+                    $sectionPrice -= 15;
+                    break;
+                case 10:
+                    $sectionPrice -= 10;
+                    break;
+                case 5:
+                    $sectionPrice -= 5;
+                    break;
             }
         } elseif ($federation == "G") {
             $adherentsPrice *= 0.85;
@@ -118,7 +120,6 @@
         $month = date("m");
         $fullPriceSections = array();
         $discountedSections = array();
-        $sectionPrice = 0; 
 
         for ($i = 1; $i <= $sections; $i++) {
             if ($i % $month == 0) {
