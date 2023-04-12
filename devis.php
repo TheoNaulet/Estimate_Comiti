@@ -13,7 +13,7 @@
 	<?php
 		require 'functions.php';
 
-		// Get les values from the form
+		// Get values from the form
 		$adherents = $_POST['adherents'];
 		$sections = $_POST['sections'];
 		$federation = $_POST['federation'];
